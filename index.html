@@ -2,480 +2,228 @@
 layout: default
 ---
 
-<div class="home">
-    <section class="hero">
-        <h1><i class="fas fa-code"></i> Claude Code 学习博客</h1>
-        <p class="hero-description">一个技术大佬的 AI 编程助手深度探索之旅</p>
-        <div class="progress-stats">
-            <div class="stat">
+<div class="md-typeset">
+    <div class="home-hero">
+        <h1>Claude Code 学习指南</h1>
+        <p>一个技术大佬的 AI 编程助手深度探索之旅</p>
+        <div class="home-stats">
+            <div class="home-stat">
                 <strong>{{ site.posts | size }}</strong>
                 <span>篇文章</span>
             </div>
-            <div class="stat">
-                <strong>{{ site.categories | size }}</strong>
-                <span>个类别</span>
+            <div class="home-stat">
+                <strong>3</strong>
+                <span>个章节</span>
             </div>
-            <div class="stat">
+            <div class="home-stat">
                 <strong>{{ site.tags | size }}</strong>
                 <span>个标签</span>
             </div>
         </div>
-    </section>
+    </div>
 
-    <section class="featured-content">
-        <div class="content-grid">
-            <div class="feature-card">
-                <div class="card-icon">
-                    <i class="fas fa-rocket"></i>
-                </div>
-                <h3>快速入门</h3>
-                <p>从零开始，学习 Claude Code 的基本使用方法和环境配置。</p>
-                <a href="{{ '/2025/08/19/claude-code-initial-experience/' | relative_url }}" class="card-link">开始学习 <i class="fas fa-arrow-right"></i></a>
-            </div>
-            
-            <div class="feature-card">
-                <div class="card-icon">
-                    <i class="fas fa-tools"></i>
-                </div>
-                <h3>实战技巧</h3>
-                <p>深入了解 Claude Code 的高级功能和实际应用场景。</p>
-                <a href="#" class="card-link">即将推出 <i class="fas fa-clock"></i></a>
-            </div>
-            
-            <div class="feature-card">
-                <div class="card-icon">
-                    <i class="fas fa-lightbulb"></i>
-                </div>
-                <h3>最佳实践</h3>
-                <p>分享在实际开发中总结的经验和技巧，提升开发效率。</p>
-                <a href="#" class="card-link">敬请期待 <i class="fas fa-star"></i></a>
-            </div>
-        </div>
-    </section>
-
-    <section class="latest-posts">
-        <h2><i class="fas fa-newspaper"></i> 最新文章</h2>
-        <div class="posts-grid">
-            {% for post in site.posts limit:6 %}
-            <article class="post-card">
-                <div class="post-card-header">
+    <div class="home-content">
+        <div class="home-section">
+            <h2>📚 最新文章</h2>
+            <div class="home-posts">
+                {% for post in site.posts limit:5 %}
+                <div class="home-post">
                     <h3><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h3>
-                    <div class="post-card-meta">
-                        <time><i class="fas fa-calendar"></i> {{ post.date | date: "%Y-%m-%d" }}</time>
-                        <span class="read-time"><i class="fas fa-clock"></i> {{ post.content | number_of_words | divided_by: 200 | plus: 1 }} 分钟</span>
-                    </div>
-                </div>
-                <div class="post-card-content">
-                    <p>{{ post.excerpt | strip_html | truncate: 120 }}</p>
-                </div>
-                <div class="post-card-footer">
-                    {% if post.tags %}
-                    <div class="post-card-tags">
-                        {% for tag in post.tags limit:3 %}
+                    <div class="home-post-meta">
+                        <i class="fas fa-calendar"></i> {{ post.date | date: "%Y年%m月%d日" }}
+                        {% if post.tags %}
+                        • 
+                        {% for tag in post.tags limit:2 %}
                         <span class="tag">{{ tag }}</span>
                         {% endfor %}
+                        {% endif %}
                     </div>
-                    {% endif %}
-                    <a href="{{ post.url | relative_url }}" class="read-more">阅读全文 <i class="fas fa-chevron-right"></i></a>
+                    <div class="home-post-excerpt">
+                        {{ post.excerpt | strip_html | truncate: 120 }}
+                    </div>
                 </div>
-            </article>
-            {% endfor %}
+                {% endfor %}
+            </div>
         </div>
-    </section>
 
-    <section class="learning-path" id="chapter1">
-        <h2><i class="fas fa-map-marked-alt"></i> 学习路线图</h2>
-        <div class="path-container">
-            <div class="path-item completed" id="chapter1">
-                <div class="path-icon">
-                    <i class="fas fa-play-circle"></i>
+        <div class="home-section">
+            <h2>🗺️ 学习路线</h2>
+            <div class="learning-path">
+                <div class="path-item completed">
+                    <div class="path-number">1</div>
+                    <div class="path-content">
+                        <h4>基础入门</h4>
+                        <p>从零开始，学习 Claude Code 的基本使用方法和环境配置</p>
+                        <ul>
+                            <li>✅ 初体验和环境配置</li>
+                            <li>🔄 基础功能使用</li>
+                            <li>⏳ 文件操作与代码编辑</li>
+                        </ul>
+                    </div>
                 </div>
-                <div class="path-content">
-                    <h4>第一章：初探 Claude Code</h4>
-                    <ul class="chapter-list">
-                        <li class="completed"><i class="fas fa-check"></i> 初体验和环境配置</li>
-                        <li class="in-progress"><i class="fas fa-spinner"></i> 基础功能使用</li>
-                        <li><i class="fas fa-circle"></i> 文件操作与代码编辑</li>
-                    </ul>
+                
+                <div class="path-item">
+                    <div class="path-number">2</div>
+                    <div class="path-content">
+                        <h4>进阶使用</h4>
+                        <p>深入了解 Claude Code 的高级功能和实际应用场景</p>
+                        <ul>
+                            <li>⏳ 项目管理技巧</li>
+                            <li>⏳ 调试和测试</li>
+                            <li>⏳ 高级工作流</li>
+                        </ul>
+                    </div>
                 </div>
-            </div>
-            
-            <div class="path-item" id="chapter2">
-                <div class="path-icon">
-                    <i class="fas fa-cogs"></i>
-                </div>
-                <div class="path-content">
-                    <h4>第二章：进阶使用</h4>
-                    <ul class="chapter-list">
-                        <li><i class="fas fa-circle"></i> 项目管理技巧</li>
-                        <li><i class="fas fa-circle"></i> 调试和测试</li>
-                        <li><i class="fas fa-circle"></i> 高级工作流</li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="path-item" id="chapter3">
-                <div class="path-icon">
-                    <i class="fas fa-trophy"></i>
-                </div>
-                <div class="path-content">
-                    <h4>第三章：最佳实践</h4>
-                    <ul class="chapter-list">
-                        <li><i class="fas fa-circle"></i> 效率提升技巧</li>
-                        <li><i class="fas fa-circle"></i> 常见问题解决</li>
-                        <li><i class="fas fa-circle"></i> 与其他工具集成</li>
-                    </ul>
+                
+                <div class="path-item">
+                    <div class="path-number">3</div>
+                    <div class="path-content">
+                        <h4>最佳实践</h4>
+                        <p>分享在实际开发中总结的经验和技巧，提升开发效率</p>
+                        <ul>
+                            <li>⏳ 效率提升技巧</li>
+                            <li>⏳ 常见问题解决</li>
+                            <li>⏳ 与其他工具集成</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
-    </section>
 
-    <section class="call-to-action">
-        <div class="cta-content">
-            <h2>准备好开始您的 AI 编程之旅了吗？</h2>
-            <p>加入我们，一起探索 Claude Code 的无限可能！</p>
-            <div class="cta-buttons">
-                <a href="{{ '/2025/08/19/claude-code-initial-experience/' | relative_url }}" class="cta-btn primary">
-                    <i class="fas fa-rocket"></i> 立即开始
-                </a>
-                <a href="{{ '/archives.html' | relative_url }}" class="cta-btn secondary">
-                    <i class="fas fa-archive"></i> 浏览所有文章
-                </a>
+        <div class="home-section">
+            <h2>🎯 关于本指南</h2>
+            <p>这是一份完整的 Claude Code 学习指南，记录了从初学者到高级用户的完整学习路径。通过实际案例和详细教程，帮助您快速掌握这个强大的 AI 编程助手。</p>
+            
+            <div class="features">
+                <div class="feature">
+                    <h4><i class="fas fa-rocket"></i> 快速上手</h4>
+                    <p>从环境配置开始，逐步引导您使用 Claude Code 的各项功能</p>
+                </div>
+                <div class="feature">
+                    <h4><i class="fas fa-code"></i> 实战导向</h4>
+                    <p>通过真实的开发场景，学习如何在项目中有效使用 Claude Code</p>
+                </div>
+                <div class="feature">
+                    <h4><i class="fas fa-lightbulb"></i> 最佳实践</h4>
+                    <p>分享经验总结和技巧，帮助您提升开发效率和代码质量</p>
+                </div>
             </div>
         </div>
-    </section>
+    </div>
 </div>
 
 <style>
-/* 首页特殊样式 */
-.featured-content {
-    margin: 3rem 0;
-}
-
-.content-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-    margin-bottom: 3rem;
-}
-
-.feature-card {
-    background: var(--bg-white);
-    padding: 2rem;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px var(--shadow-light);
-    text-align: center;
-    transition: all 0.3s ease;
-    border-top: 4px solid var(--tsinghua-purple);
-}
-
-.feature-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 30px var(--shadow-medium);
-}
-
-.card-icon {
-    width: 60px;
-    height: 60px;
-    background: linear-gradient(135deg, var(--tsinghua-purple) 0%, var(--tsinghua-purple-light) 100%);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 1.5rem;
-    font-size: 1.5rem;
-    color: white;
-}
-
-.feature-card h3 {
-    color: var(--tsinghua-purple);
-    margin-bottom: 1rem;
-    font-size: 1.3rem;
-}
-
-.feature-card p {
-    color: var(--text-secondary);
-    margin-bottom: 1.5rem;
-    line-height: 1.6;
-}
-
-.card-link {
-    color: var(--tsinghua-purple);
-    text-decoration: none;
-    font-weight: 600;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    transition: color 0.3s ease;
-}
-
-.card-link:hover {
-    color: var(--tsinghua-purple-light);
-}
-
-.posts-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    gap: 2rem;
-    margin-top: 2rem;
-}
-
-.post-card {
-    background: var(--bg-white);
-    border-radius: 12px;
-    box-shadow: 0 4px 20px var(--shadow-light);
-    overflow: hidden;
-    transition: all 0.3s ease;
-}
-
-.post-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 25px var(--shadow-medium);
-}
-
-.post-card-header {
-    padding: 1.5rem 1.5rem 1rem;
-    border-bottom: 1px solid var(--border-light);
-}
-
-.post-card-header h3 {
-    margin-bottom: 0.8rem;
-    font-size: 1.1rem;
-}
-
-.post-card-header h3 a {
-    color: var(--text-primary);
-    text-decoration: none;
-    transition: color 0.3s ease;
-}
-
-.post-card-header h3 a:hover {
-    color: var(--tsinghua-purple);
-}
-
-.post-card-meta {
-    display: flex;
-    gap: 1rem;
-    font-size: 0.85rem;
-    color: var(--text-light);
-}
-
-.post-card-content {
-    padding: 1rem 1.5rem;
-}
-
-.post-card-content p {
-    color: var(--text-secondary);
-    line-height: 1.6;
-    margin: 0;
-}
-
-.post-card-footer {
-    padding: 1rem 1.5rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: var(--bg-light);
-}
-
-.post-card-tags {
-    display: flex;
-    gap: 0.5rem;
-}
-
-.post-card-tags .tag {
-    font-size: 0.7rem;
-    padding: 0.2rem 0.6rem;
-}
-
-.read-more {
-    color: var(--tsinghua-purple);
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 0.9rem;
-    display: flex;
-    align-items: center;
-    gap: 0.3rem;
-    transition: color 0.3s ease;
-}
-
-.read-more:hover {
-    color: var(--tsinghua-purple-light);
-}
-
 .learning-path {
-    margin: 4rem 0;
-}
-
-.path-container {
-    margin-top: 2rem;
+    display: grid;
+    gap: 1.5rem;
+    margin-top: 1rem;
 }
 
 .path-item {
     display: flex;
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-    padding: 2rem;
-    background: var(--bg-white);
-    border-radius: 12px;
-    box-shadow: 0 4px 20px var(--shadow-light);
-    transition: all 0.3s ease;
-}
-
-.path-item:hover {
-    transform: translateX(10px);
-    box-shadow: 0 6px 25px var(--shadow-medium);
+    gap: 1rem;
+    padding: 1.5rem;
+    background-color: var(--md-default-bg-color--light);
+    border-radius: 0.5rem;
+    border-left: 4px solid var(--md-default-bg-color--lighter);
+    transition: all 0.2s ease;
 }
 
 .path-item.completed {
-    border-left: 4px solid #27ae60;
+    border-left-color: #4CAF50;
 }
 
-.path-item.completed .path-icon {
-    background: #27ae60;
+.path-item:hover {
+    box-shadow: var(--md-shadow-z2);
+    transform: translateY(-2px);
 }
 
-.path-icon {
-    width: 50px;
-    height: 50px;
-    background: var(--tsinghua-purple);
+.path-number {
+    width: 2rem;
+    height: 2rem;
+    background-color: var(--md-primary-fg-color);
+    color: white;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
-    font-size: 1.2rem;
+    font-weight: 600;
     flex-shrink: 0;
 }
 
-.path-content h4 {
-    color: var(--tsinghua-purple);
-    margin-bottom: 1rem;
-    font-size: 1.2rem;
+.path-item.completed .path-number {
+    background-color: #4CAF50;
 }
 
-.chapter-list {
+.path-content h4 {
+    margin: 0 0 0.5rem;
+    color: var(--md-primary-fg-color);
+}
+
+.path-content p {
+    margin: 0 0 1rem;
+    color: var(--md-default-fg-color--light);
+}
+
+.path-content ul {
+    margin: 0;
+    padding-left: 1rem;
     list-style: none;
 }
 
-.chapter-list li {
+.path-content li {
+    margin: 0.25rem 0;
+    font-size: 0.9rem;
+}
+
+.features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.feature {
+    padding: 1rem;
+    background-color: var(--md-default-bg-color--light);
+    border-radius: 0.5rem;
+}
+
+.feature h4 {
+    margin: 0 0 0.5rem;
+    color: var(--md-primary-fg-color);
     display: flex;
-    align-items: center;
-    gap: 0.8rem;
-    margin-bottom: 0.5rem;
-    color: var(--text-secondary);
-}
-
-.chapter-list li.completed {
-    color: #27ae60;
-}
-
-.chapter-list li.completed i {
-    color: #27ae60;
-}
-
-.chapter-list li.in-progress {
-    color: var(--tsinghua-purple);
-}
-
-.chapter-list li.in-progress i {
-    color: var(--tsinghua-purple);
-    animation: spin 2s linear infinite;
-}
-
-@keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-
-.call-to-action {
-    background: linear-gradient(135deg, var(--tsinghua-purple) 0%, var(--tsinghua-purple-light) 100%);
-    color: white;
-    padding: 4rem 2rem;
-    border-radius: 12px;
-    text-align: center;
-    margin: 4rem 0 2rem;
-}
-
-.cta-content h2 {
-    font-size: 2rem;
-    margin-bottom: 1rem;
-}
-
-.cta-content p {
-    font-size: 1.1rem;
-    opacity: 0.9;
-    margin-bottom: 2rem;
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.cta-buttons {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
-.cta-btn {
-    padding: 1rem 2rem;
-    border-radius: 50px;
-    text-decoration: none;
-    font-weight: 600;
-    display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    transition: all 0.3s ease;
-    border: 2px solid transparent;
 }
 
-.cta-btn.primary {
-    background: var(--accent-gold);
-    color: var(--tsinghua-purple);
+.feature p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--md-default-fg-color--light);
 }
 
-.cta-btn.primary:hover {
-    background: white;
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3);
-}
-
-.cta-btn.secondary {
-    background: transparent;
+.tag {
+    background-color: var(--md-primary-fg-color);
     color: white;
-    border-color: white;
+    padding: 0.1rem 0.5rem;
+    border-radius: 1rem;
+    font-size: 0.75rem;
+    font-weight: 500;
 }
 
-.cta-btn.secondary:hover {
-    background: white;
-    color: var(--tsinghua-purple);
-    transform: translateY(-2px);
-}
-
-@media (max-width: 768px) {
-    .content-grid {
-        grid-template-columns: 1fr;
+@media (max-width: 48em) {
+    .home-stats {
+        gap: 1rem;
     }
     
-    .posts-grid {
+    .features {
         grid-template-columns: 1fr;
     }
     
     .path-item {
         flex-direction: column;
         text-align: center;
-    }
-    
-    .cta-buttons {
-        flex-direction: column;
-        align-items: center;
-    }
-    
-    .cta-btn {
-        width: 100%;
-        max-width: 300px;
-        justify-content: center;
     }
 }
 </style>

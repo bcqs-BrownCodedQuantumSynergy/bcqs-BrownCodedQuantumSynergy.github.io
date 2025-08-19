@@ -1,256 +1,209 @@
-// 清华紫主题博客交互功能
+// Material Design 清华紫主题交互功能
 
 document.addEventListener('DOMContentLoaded', function() {
-    // 自动生成文章目录
-    generateTableOfContents();
+    // 初始化所有功能
+    initMobileNav();
+    initThemeToggle();
+    initHighlight();
     
-    // 初始化滚动效果
-    initScrollEffects();
-    
-    // 初始化交互按钮
-    initInteractiveButtons();
-    
-    // 响应式导航
-    initResponsiveNav();
+    console.log('Claude Code 博客已加载完成 ✨');
 });
 
 /**
- * 自动生成文章目录
+ * 移动端导航功能
  */
-function generateTableOfContents() {
-    const tocContainer = document.getElementById('markdown-toc');
-    if (!tocContainer) return;
+function initMobileNav() {
+    const navToggle = document.getElementById('nav-toggle');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
     
-    const article = document.querySelector('.post-content');
-    if (!article) return;
+    if (!navToggle || !sidebar || !overlay) return;
     
-    const headings = article.querySelectorAll('h1, h2, h3, h4, h5, h6');
-    if (headings.length === 0) {
-        tocContainer.innerHTML = '<p class="no-toc">📝 本文暂无目录</p>';
-        return;
-    }
-    
-    let tocHTML = '<ul class="toc-list">';
-    let currentLevel = 1;
-    
-    headings.forEach((heading, index) => {
-        const level = parseInt(heading.tagName.charAt(1));
-        const text = heading.textContent.trim();
-        const id = `heading-${index}`;
-        
-        // 为标题添加ID
-        heading.id = id;
-        
-        // 处理层级
-        if (level > currentLevel) {
-            for (let i = currentLevel; i < level; i++) {
-                tocHTML += '<ul>';
-            }
-        } else if (level < currentLevel) {
-            for (let i = currentLevel; i > level; i--) {
-                tocHTML += '</ul>';
-            }
-        }
-        
-        tocHTML += `<li><a href="#${id}" class="toc-link" data-level="${level}">${text}</a></li>`;
-        currentLevel = level;
+    // 切换侧边栏显示
+    navToggle.addEventListener('click', function() {
+        sidebar.classList.toggle('active');
+        overlay.classList.toggle('active');
+        document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : '';
     });
     
-    // 关闭未闭合的列表
-    for (let i = currentLevel; i > 1; i--) {
-        tocHTML += '</ul>';
+    // 点击遮罩关闭侧边栏
+    overlay.addEventListener('click', function() {
+        sidebar.classList.remove('active');
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+    });
+    
+    // 响应式处理
+    function handleResize() {
+        if (window.innerWidth > 1220) { // 76.25em
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
     }
-    tocHTML += '</ul>';
     
-    tocContainer.innerHTML = tocHTML;
+    window.addEventListener('resize', handleResize);
+}
+
+/**
+ * 主题切换功能
+ */
+function initThemeToggle() {
+    const themeToggle = document.getElementById('theme-toggle');
+    if (!themeToggle) return;
     
-    // 添加点击事件
-    tocContainer.querySelectorAll('.toc-link').forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            const targetId = this.getAttribute('href').substring(1);
-            const targetElement = document.getElementById(targetId);
-            
-            if (targetElement) {
-                const offsetTop = targetElement.offsetTop - 120; // 考虑固定头部高度
-                window.scrollTo({
-                    top: offsetTop,
-                    behavior: 'smooth'
-                });
-                
-                // 更新活跃状态
-                updateActiveTocLink(this);
-            }
+    // 读取保存的主题
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    setTheme(savedTheme);
+    
+    // 主题切换事件
+    themeToggle.addEventListener('click', function() {
+        const currentTheme = document.body.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        setTheme(newTheme);
+    });
+    
+    function setTheme(theme) {
+        document.body.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+        
+        // 更新代码高亮主题
+        updateCodeTheme(theme);
+    }
+}
+
+/**
+ * 更新代码高亮主题
+ */
+function updateCodeTheme(theme) {
+    const existingLink = document.querySelector('link[href*="highlight.js"]');
+    if (!existingLink) return;
+    
+    const newHref = theme === 'dark' 
+        ? 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css'
+        : 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css';
+    
+    if (existingLink.href !== newHref) {
+        existingLink.href = newHref;
+    }
+}
+
+/**
+ * 代码高亮初始化
+ */
+function initHighlight() {
+    // 高亮所有代码块
+    if (typeof hljs !== 'undefined') {
+        hljs.highlightAll();
+        
+        // 为代码块添加复制功能
+        addCopyButtons();
+    }
+}
+
+/**
+ * 为代码块添加复制按钮
+ */
+function addCopyButtons() {
+    const codeBlocks = document.querySelectorAll('pre code');
+    
+    codeBlocks.forEach(codeBlock => {
+        const pre = codeBlock.parentNode;
+        
+        // 跳过已经有复制按钮的代码块
+        if (pre.querySelector('.copy-btn')) return;
+        
+        // 创建复制按钮
+        const copyBtn = document.createElement('button');
+        copyBtn.className = 'copy-btn';
+        copyBtn.innerHTML = '<i class="fas fa-copy"></i>';
+        copyBtn.title = '复制代码';
+        
+        // 设置样式
+        copyBtn.style.cssText = `
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: var(--md-primary-fg-color);
+            color: white;
+            border: none;
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.2s ease, background-color 0.2s ease;
+            font-size: 0.8rem;
+            z-index: 10;
+        `;
+        
+        // 设置父容器为相对定位
+        pre.style.position = 'relative';
+        
+        // 添加悬停效果
+        pre.addEventListener('mouseenter', () => {
+            copyBtn.style.opacity = '1';
         });
-    });
-}
-
-/**
- * 更新目录活跃状态
- */
-function updateActiveTocLink(activeLink) {
-    // 移除所有活跃状态
-    document.querySelectorAll('.toc-link').forEach(link => {
-        link.classList.remove('active');
-    });
-    
-    // 添加当前活跃状态
-    activeLink.classList.add('active');
-}
-
-/**
- * 初始化滚动效果
- */
-function initScrollEffects() {
-    let ticking = false;
-    
-    function updateOnScroll() {
-        updateActiveHeading();
-        updateScrollProgress();
-        ticking = false;
-    }
-    
-    window.addEventListener('scroll', function() {
-        if (!ticking) {
-            requestAnimationFrame(updateOnScroll);
-            ticking = true;
-        }
-    });
-}
-
-/**
- * 根据滚动位置更新活跃标题
- */
-function updateActiveHeading() {
-    const headings = document.querySelectorAll('.post-content h1, .post-content h2, .post-content h3, .post-content h4, .post-content h5, .post-content h6');
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    
-    let activeHeading = null;
-    
-    headings.forEach(heading => {
-        const headingTop = heading.offsetTop - 150; // 偏移量
-        if (scrollTop >= headingTop) {
-            activeHeading = heading;
-        }
-    });
-    
-    if (activeHeading) {
-        const activeLink = document.querySelector(`.toc-link[href="#${activeHeading.id}"]`);
-        if (activeLink) {
-            updateActiveTocLink(activeLink);
-        }
-    }
-}
-
-/**
- * 更新阅读进度（可选功能）
- */
-function updateScrollProgress() {
-    const article = document.querySelector('.post-content');
-    if (!article) return;
-    
-    const scrollTop = window.pageYOffset;
-    const documentHeight = document.documentElement.scrollHeight - window.innerHeight;
-    const scrollProgress = (scrollTop / documentHeight) * 100;
-    
-    // 可以在这里添加进度条显示
-    // 例如：更新头部的进度条
-    const progressBar = document.querySelector('.reading-progress');
-    if (progressBar) {
-        progressBar.style.width = scrollProgress + '%';
-    }
-}
-
-/**
- * 初始化交互按钮
- */
-function initInteractiveButtons() {
-    // 点赞按钮
-    const likeBtn = document.querySelector('.like-btn');
-    if (likeBtn) {
-        likeBtn.addEventListener('click', function() {
-            this.classList.toggle('liked');
-            const icon = this.querySelector('i');
+        
+        pre.addEventListener('mouseleave', () => {
+            copyBtn.style.opacity = '0';
+        });
+        
+        // 复制功能
+        copyBtn.addEventListener('click', async function() {
+            const code = codeBlock.textContent;
             
-            if (this.classList.contains('liked')) {
-                icon.style.color = '#e74c3c';
-                this.style.transform = 'scale(1.1)';
+            try {
+                await navigator.clipboard.writeText(code);
                 
-                // 添加动画效果
+                // 临时改变按钮状态
+                this.innerHTML = '<i class="fas fa-check"></i>';
+                this.style.backgroundColor = '#4CAF50';
+                this.style.opacity = '1';
+                
                 setTimeout(() => {
-                    this.style.transform = 'scale(1)';
-                }, 200);
+                    this.innerHTML = '<i class="fas fa-copy"></i>';
+                    this.style.backgroundColor = 'var(--md-primary-fg-color)';
+                }, 2000);
                 
-                showToast('感谢您的点赞！❤️');
-            } else {
-                icon.style.color = '';
-                showToast('已取消点赞');
+                showToast('代码已复制到剪贴板');
+                
+            } catch (err) {
+                console.error('复制失败:', err);
+                showToast('复制失败，请手动复制');
             }
         });
-    }
-    
-    // 分享按钮
-    const shareBtn = document.querySelector('.share-btn');
-    if (shareBtn) {
-        shareBtn.addEventListener('click', function() {
-            if (navigator.share) {
-                navigator.share({
-                    title: document.title,
-                    url: window.location.href
-                });
-            } else {
-                // 降级处理：复制链接到剪贴板
-                copyToClipboard(window.location.href);
-                showToast('链接已复制到剪贴板！');
-            }
-        });
-    }
-}
-
-/**
- * 复制文本到剪贴板
- */
-function copyToClipboard(text) {
-    if (navigator.clipboard) {
-        navigator.clipboard.writeText(text);
-    } else {
-        // 降级处理
-        const textArea = document.createElement('textarea');
-        textArea.value = text;
-        document.body.appendChild(textArea);
-        textArea.focus();
-        textArea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textArea);
-    }
+        
+        pre.appendChild(copyBtn);
+    });
 }
 
 /**
  * 显示提示消息
  */
 function showToast(message, duration = 3000) {
-    // 移除现有的toast
+    // 移除现有的 toast
     const existingToast = document.querySelector('.toast');
     if (existingToast) {
         existingToast.remove();
     }
     
-    // 创建新的toast
+    // 创建新的 toast
     const toast = document.createElement('div');
     toast.className = 'toast';
     toast.textContent = message;
     toast.style.cssText = `
         position: fixed;
-        top: 100px;
-        right: 20px;
-        background: var(--tsinghua-purple);
+        top: 4rem;
+        right: 1rem;
+        background: var(--md-primary-fg-color);
         color: white;
-        padding: 12px 20px;
-        border-radius: 6px;
-        box-shadow: 0 4px 20px rgba(67, 33, 126, 0.3);
+        padding: 0.75rem 1rem;
+        border-radius: 0.25rem;
+        box-shadow: var(--md-shadow-z2);
         z-index: 10000;
         transform: translateX(100%);
         transition: transform 0.3s ease;
+        font-size: 0.9rem;
         font-weight: 500;
     `;
     
@@ -273,223 +226,54 @@ function showToast(message, duration = 3000) {
 }
 
 /**
- * 响应式导航处理
+ * 平滑滚动到锚点
  */
-function initResponsiveNav() {
-    // 检测移动设备
-    function isMobile() {
-        return window.innerWidth <= 968;
-    }
-    
-    // 处理侧边栏在移动设备上的行为
-    function handleSidebarDisplay() {
-        const leftSidebar = document.querySelector('.left-sidebar');
-        const rightSidebar = document.querySelector('.right-sidebar');
-        
-        if (isMobile()) {
-            // 移动设备上可以添加折叠功能
-            if (leftSidebar) {
-                leftSidebar.style.display = 'block';
+function smoothScrollToAnchor() {
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            const targetId = this.getAttribute('href');
+            if (targetId === '#') return;
+            
+            const targetElement = document.querySelector(targetId);
+            if (targetElement) {
+                e.preventDefault();
+                targetElement.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
             }
-            if (rightSidebar) {
-                rightSidebar.style.display = 'block';
-            }
-        }
-    }
-    
-    // 监听窗口大小变化
-    window.addEventListener('resize', handleSidebarDisplay);
-    handleSidebarDisplay(); // 初始化
-}
-
-/**
- * 添加代码复制功能
- */
-function initCodeCopyFeature() {
-    const codeBlocks = document.querySelectorAll('pre code');
-    
-    codeBlocks.forEach(codeBlock => {
-        const pre = codeBlock.parentNode;
-        
-        // 创建复制按钮
-        const copyBtn = document.createElement('button');
-        copyBtn.innerHTML = '<i class="fas fa-copy"></i>';
-        copyBtn.className = 'code-copy-btn';
-        copyBtn.style.cssText = `
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            color: white;
-            padding: 8px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        `;
-        
-        // 设置pre为相对定位
-        pre.style.position = 'relative';
-        pre.appendChild(copyBtn);
-        
-        // 添加复制功能
-        copyBtn.addEventListener('click', function() {
-            const code = codeBlock.textContent;
-            copyToClipboard(code);
-            
-            // 临时改变按钮图标
-            this.innerHTML = '<i class="fas fa-check"></i>';
-            this.style.background = 'rgba(46, 204, 113, 0.8)';
-            
-            setTimeout(() => {
-                this.innerHTML = '<i class="fas fa-copy"></i>';
-                this.style.background = 'rgba(255, 255, 255, 0.1)';
-            }, 2000);
-            
-            showToast('代码已复制！');
-        });
-        
-        // 悬停效果
-        copyBtn.addEventListener('mouseenter', function() {
-            this.style.background = 'rgba(255, 255, 255, 0.2)';
-        });
-        
-        copyBtn.addEventListener('mouseleave', function() {
-            this.style.background = 'rgba(255, 255, 255, 0.1)';
         });
     });
 }
 
-// 在DOM加载完成后初始化代码复制功能
-document.addEventListener('DOMContentLoaded', function() {
-    setTimeout(initCodeCopyFeature, 500); // 延迟执行，确保代码高亮完成
+/**
+ * 自动生成文章目录（如果需要）
+ */
+function generateTOC() {
+    const article = document.querySelector('.md-content__inner');
+    if (!article) return;
+    
+    const headings = article.querySelectorAll('h1, h2, h3, h4, h5, h6');
+    if (headings.length < 3) return; // 标题太少不生成目录
+    
+    // 在这里可以添加目录生成逻辑
+    // 由于采用简洁设计，暂时不实现
+}
+
+// 在页面加载完成后执行额外的初始化
+window.addEventListener('load', function() {
+    smoothScrollToAnchor();
+    generateTOC();
 });
 
-/**
- * 添加图片点击放大功能
- */
-function initImageZoom() {
-    const images = document.querySelectorAll('.post-content img');
-    
-    images.forEach(img => {
-        img.style.cursor = 'zoom-in';
-        
-        img.addEventListener('click', function() {
-            createImageModal(this.src, this.alt);
-        });
-    });
-}
-
-/**
- * 创建图片模态框
- */
-function createImageModal(src, alt) {
-    const modal = document.createElement('div');
-    modal.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.9);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 10001;
-        cursor: zoom-out;
-    `;
-    
-    const img = document.createElement('img');
-    img.src = src;
-    img.alt = alt;
-    img.style.cssText = `
-        max-width: 90%;
-        max-height: 90%;
-        border-radius: 8px;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
-    `;
-    
-    modal.appendChild(img);
-    document.body.appendChild(modal);
-    
-    // 点击关闭
-    modal.addEventListener('click', function() {
-        document.body.removeChild(modal);
-    });
-    
-    // ESC键关闭
-    const closeOnEsc = function(e) {
-        if (e.key === 'Escape') {
-            document.body.removeChild(modal);
-            document.removeEventListener('keydown', closeOnEsc);
+// 主题切换的键盘快捷键
+document.addEventListener('keydown', function(e) {
+    // Ctrl/Cmd + Shift + D 切换主题
+    if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'D') {
+        e.preventDefault();
+        const themeToggle = document.getElementById('theme-toggle');
+        if (themeToggle) {
+            themeToggle.click();
         }
-    };
-    document.addEventListener('keydown', closeOnEsc);
-}
-
-// 初始化图片缩放功能
-document.addEventListener('DOMContentLoaded', function() {
-    setTimeout(initImageZoom, 500);
-});
-
-/**
- * 平滑滚动到顶部
- */
-function scrollToTop() {
-    window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-    });
-}
-
-// 添加返回顶部按钮
-document.addEventListener('DOMContentLoaded', function() {
-    // 创建返回顶部按钮
-    const backToTopBtn = document.createElement('button');
-    backToTopBtn.innerHTML = '<i class="fas fa-chevron-up"></i>';
-    backToTopBtn.className = 'back-to-top';
-    backToTopBtn.style.cssText = `
-        position: fixed;
-        bottom: 30px;
-        right: 30px;
-        width: 50px;
-        height: 50px;
-        background: var(--tsinghua-purple);
-        color: white;
-        border: none;
-        border-radius: 50%;
-        cursor: pointer;
-        box-shadow: 0 4px 20px rgba(67, 33, 126, 0.3);
-        transition: all 0.3s ease;
-        opacity: 0;
-        visibility: hidden;
-        z-index: 1000;
-    `;
-    
-    document.body.appendChild(backToTopBtn);
-    
-    // 滚动显示/隐藏按钮
-    window.addEventListener('scroll', function() {
-        if (window.pageYOffset > 300) {
-            backToTopBtn.style.opacity = '1';
-            backToTopBtn.style.visibility = 'visible';
-        } else {
-            backToTopBtn.style.opacity = '0';
-            backToTopBtn.style.visibility = 'hidden';
-        }
-    });
-    
-    // 点击返回顶部
-    backToTopBtn.addEventListener('click', scrollToTop);
-    
-    // 悬停效果
-    backToTopBtn.addEventListener('mouseenter', function() {
-        this.style.transform = 'scale(1.1)';
-        this.style.background = 'var(--tsinghua-purple-light)';
-    });
-    
-    backToTopBtn.addEventListener('mouseleave', function() {
-        this.style.transform = 'scale(1)';
-        this.style.background = 'var(--tsinghua-purple)';
-    });
+    }
 });

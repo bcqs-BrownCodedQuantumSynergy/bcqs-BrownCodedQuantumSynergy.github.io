@@ -3,119 +3,221 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% if page.title %}{{ page.title }} | {% endif %}Claude Code 学习博客</title>
+    <title>{% if page.title %}{{ page.title }} | {% endif %}{{ site.title }}</title>
+    <meta name="description" content="{% if page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}">
+    
+    <!-- CSS -->
     <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css">
+    
+    <!-- JavaScript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
 </head>
-<body>
-    <!-- 页眉 -->
-    <header class="site-header">
-        <div class="header-content">
-            <div class="logo-section">
-                <h1><a href="{{ '/' | relative_url }}"><i class="fas fa-code"></i> Claude Code 学习博客</a></h1>
-                <p class="tagline">一个技术大佬的 AI 编程助手深度探索之旅</p>
+<body data-theme="light">
+    <!-- 顶部导航栏 -->
+    <header class="md-header">
+        <nav class="md-header__inner">
+            <div class="md-header__button md-icon">
+                <button class="md-header__button md-icon" id="nav-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
             </div>
-            <nav class="main-nav">
-                <a href="{{ '/' | relative_url }}"><i class="fas fa-home"></i> 首页</a>
-                <a href="{{ '/archives.html' | relative_url }}"><i class="fas fa-archive"></i> 归档</a>
-                <a href="{{ '/about.html' | relative_url }}"><i class="fas fa-user"></i> 关于</a>
-            </nav>
-        </div>
+            
+            <div class="md-header__title">
+                <div class="md-header__ellipsis">
+                    <div class="md-header__topic">
+                        <span class="md-ellipsis">{{ site.title }}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="md-header__options">
+                <button class="md-header__button md-icon" id="theme-toggle" title="切换主题">
+                    <i class="fas fa-sun theme-icon-light"></i>
+                    <i class="fas fa-moon theme-icon-dark"></i>
+                </button>
+                
+                <a href="{{ site.social_links.github | prepend: 'https://github.com/' }}" class="md-header__button md-icon" title="GitHub">
+                    <i class="fab fa-github"></i>
+                </a>
+            </div>
+        </nav>
     </header>
 
-    <!-- 主体三栏布局 -->
-    <div class="main-container">
-        <!-- 左侧：章节目录 -->
-        <aside class="left-sidebar">
-            <div class="sidebar-content">
-                <h3><i class="fas fa-list-ul"></i> 本章目录</h3>
-                <div class="chapter-toc">
-                    {% if page.layout == 'post' %}
-                        <div id="markdown-toc"></div>
-                    {% else %}
-                        <div class="toc-placeholder">
-                            <p>📖 学习路线图</p>
-                            <ul>
-                                <li><a href="#chapter1">第一章：初探 Claude Code</a></li>
-                                <li><a href="#chapter2">第二章：进阶使用</a></li>
-                                <li><a href="#chapter3">第三章：最佳实践</a></li>
-                            </ul>
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
-        </aside>
-
-        <!-- 中间：主要内容 -->
-        <main class="main-content">
-            <div class="content-wrapper">
-                {{ content }}
-            </div>
-        </main>
-
-        <!-- 右侧：文章列表 -->
-        <aside class="right-sidebar">
-            <div class="sidebar-content">
-                <h3><i class="fas fa-newspaper"></i> 最新文章</h3>
-                <div class="recent-posts">
-                    {% for post in site.posts limit:8 %}
-                    <article class="post-item">
-                        <h4><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h4>
-                        <div class="post-meta">
-                            <time><i class="fas fa-calendar"></i> {{ post.date | date: "%m-%d" }}</time>
-                            {% if post.tags %}
-                            <div class="tags">
-                                {% for tag in post.tags limit:2 %}
-                                <span class="tag">{{ tag }}</span>
-                                {% endfor %}
+    <!-- 侧边导航 -->
+    <div class="md-container">
+        <aside class="md-sidebar md-sidebar--primary" id="sidebar">
+            <div class="md-sidebar__scrollwrap">
+                <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary">
+                        <label class="md-nav__title" for="__drawer">
+                            <a href="{{ '/' | relative_url }}" title="{{ site.title }}" class="md-nav__button md-logo">
+                                <i class="fas fa-code"></i>
+                                {{ site.title }}
+                            </a>
+                        </label>
+                        
+                        <div class="md-nav__source">
+                            <div class="md-source">
+                                <div class="md-source__repository">
+                                    Claude Code 学习指南
+                                </div>
                             </div>
-                            {% endif %}
                         </div>
-                    </article>
-                    {% endfor %}
-                </div>
-                
-                <h3><i class="fas fa-tags"></i> 标签云</h3>
-                <div class="tag-cloud">
-                    {% assign tags = site.tags | sort %}
-                    {% for tag in tags %}
-                    <a href="#" class="tag-item">{{ tag[0] }}</a>
-                    {% endfor %}
+                        
+                        <ul class="md-nav__list">
+                            <li class="md-nav__item">
+                                <a href="{{ '/' | relative_url }}" class="md-nav__link">
+                                    <i class="fas fa-home"></i> 首页
+                                </a>
+                            </li>
+                            
+                            <li class="md-nav__item md-nav__item--nested">
+                                <input class="md-nav__toggle md-toggle" type="checkbox" id="nav-1">
+                                <label class="md-nav__link" for="nav-1">
+                                    <i class="fas fa-rocket"></i> 基础入门
+                                    <span class="md-nav__icon md-icon">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </label>
+                                <nav class="md-nav">
+                                    <ul class="md-nav__list">
+                                        <li class="md-nav__item">
+                                            <a href="{{ '/2025/08/19/claude-code-initial-experience/' | relative_url }}" class="md-nav__link">
+                                                初体验和环境配置
+                                            </a>
+                                        </li>
+                                        <li class="md-nav__item">
+                                            <a href="#" class="md-nav__link">
+                                                基础功能使用
+                                            </a>
+                                        </li>
+                                        <li class="md-nav__item">
+                                            <a href="#" class="md-nav__link">
+                                                文件操作与代码编辑
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </li>
+                            
+                            <li class="md-nav__item md-nav__item--nested">
+                                <input class="md-nav__toggle md-toggle" type="checkbox" id="nav-2">
+                                <label class="md-nav__link" for="nav-2">
+                                    <i class="fas fa-cogs"></i> 进阶使用
+                                    <span class="md-nav__icon md-icon">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </label>
+                                <nav class="md-nav">
+                                    <ul class="md-nav__list">
+                                        <li class="md-nav__item">
+                                            <a href="#" class="md-nav__link">
+                                                项目管理技巧
+                                            </a>
+                                        </li>
+                                        <li class="md-nav__item">
+                                            <a href="#" class="md-nav__link">
+                                                调试和测试
+                                            </a>
+                                        </li>
+                                        <li class="md-nav__item">
+                                            <a href="#" class="md-nav__link">
+                                                高级工作流
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </li>
+                            
+                            <li class="md-nav__item md-nav__item--nested">
+                                <input class="md-nav__toggle md-toggle" type="checkbox" id="nav-3">
+                                <label class="md-nav__link" for="nav-3">
+                                    <i class="fas fa-star"></i> 最佳实践
+                                    <span class="md-nav__icon md-icon">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </label>
+                                <nav class="md-nav">
+                                    <ul class="md-nav__list">
+                                        <li class="md-nav__item">
+                                            <a href="#" class="md-nav__link">
+                                                效率提升技巧
+                                            </a>
+                                        </li>
+                                        <li class="md-nav__item">
+                                            <a href="#" class="md-nav__link">
+                                                常见问题解决
+                                            </a>
+                                        </li>
+                                        <li class="md-nav__item">
+                                            <a href="#" class="md-nav__link">
+                                                与其他工具集成
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </li>
+                            
+                            <li class="md-nav__separator"></li>
+                            
+                            <li class="md-nav__item">
+                                <a href="#" class="md-nav__link">
+                                    <i class="fas fa-tags"></i> 标签
+                                </a>
+                            </li>
+                            
+                            <li class="md-nav__item">
+                                <a href="#" class="md-nav__link">
+                                    <i class="fas fa-archive"></i> 归档
+                                </a>
+                            </li>
+                            
+                            <li class="md-nav__item">
+                                <a href="#" class="md-nav__link">
+                                    <i class="fas fa-user"></i> 关于
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
                 </div>
             </div>
         </aside>
+
+        <!-- 主要内容区域 -->
+        <div class="md-content">
+            <article class="md-content__inner">
+                {{ content }}
+            </article>
+        </div>
     </div>
 
     <!-- 页脚 -->
-    <footer class="site-footer">
-        <div class="footer-content">
-            <div class="footer-section">
-                <h4>关于博客</h4>
-                <p>记录 Claude Code 学习历程，分享 AI 编程技巧</p>
-            </div>
-            <div class="footer-section">
-                <h4>快速链接</h4>
-                <ul>
-                    <li><a href="{{ '/' | relative_url }}">首页</a></li>
-                    <li><a href="{{ '/archives.html' | relative_url }}">文章归档</a></li>
-                    <li><a href="#">RSS 订阅</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h4>联系方式</h4>
-                <div class="social-links">
-                    <a href="#"><i class="fab fa-github"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                    <a href="#"><i class="fas fa-envelope"></i></a>
+    <footer class="md-footer">
+        <div class="md-footer-meta md-typeset">
+            <div class="md-footer-meta__inner md-grid">
+                <div class="md-footer-copyright">
+                    <div class="md-footer-copyright__highlight">
+                        &copy; 2025 {{ site.author.name }}
+                    </div>
+                    Made with <i class="fas fa-heart" style="color: #e74c3c;"></i> and 
+                    <a href="https://jekyllrb.com/" target="_blank">Jekyll</a>
                 </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2025 技术探索者. 记录每一步学习，分享每一个发现 🚀</p>
+                
+                <div class="md-footer-social">
+                    {% if site.social_links.github %}
+                    <a href="{{ site.social_links.github | prepend: 'https://github.com/' }}" class="md-footer-social__link">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </footer>
+
+    <!-- 移动端遮罩 -->
+    <div class="md-overlay" id="overlay"></div>
 
     <!-- JavaScript -->
     <script>hljs.highlightAll();</script>
