@@ -1,0 +1,50 @@
+title: Claude Code 学习博客
+description: 一个技术大佬的 AI 编程助手深度探索之旅
+baseurl: ""
+url: "https://bcqs-browncodedquantumsynergy.github.io"
+
+# Author settings
+author:
+  name: 技术探索者
+  email: bcqs@example.com
+  github: bcqs-BrownCodedQuantumSynergy
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+theme: minima
+
+# Plugins
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+  - jekyll-seo-tag
+
+# Collections
+collections:
+  posts:
+    output: true
+    permalink: /:year/:month/:day/:title/
+
+# Pagination
+paginate: 10
+paginate_path: "/page:num/"
+
+# Exclude files
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor/bundle/
+  - vendor/cache/
+  - vendor/gems/
+  - vendor/ruby/
+  - STYLE_GUIDE.md
+
+# Timezone
+timezone: Asia/Shanghai
+
+# Social links
+social_links:
+  github: bcqs-BrownCodedQuantumSynergy
+  twitter: yourusername

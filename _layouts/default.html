@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if page.title %}{{ page.title }} | {% endif %}Claude Code 学习博客</title>
+    <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+</head>
+<body>
+    <!-- 页眉 -->
+    <header class="site-header">
+        <div class="header-content">
+            <div class="logo-section">
+                <h1><a href="{{ '/' | relative_url }}"><i class="fas fa-code"></i> Claude Code 学习博客</a></h1>
+                <p class="tagline">一个技术大佬的 AI 编程助手深度探索之旅</p>
+            </div>
+            <nav class="main-nav">
+                <a href="{{ '/' | relative_url }}"><i class="fas fa-home"></i> 首页</a>
+                <a href="{{ '/archives.html' | relative_url }}"><i class="fas fa-archive"></i> 归档</a>
+                <a href="{{ '/about.html' | relative_url }}"><i class="fas fa-user"></i> 关于</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 主体三栏布局 -->
+    <div class="main-container">
+        <!-- 左侧：章节目录 -->
+        <aside class="left-sidebar">
+            <div class="sidebar-content">
+                <h3><i class="fas fa-list-ul"></i> 本章目录</h3>
+                <div class="chapter-toc">
+                    {% if page.layout == 'post' %}
+                        <div id="markdown-toc"></div>
+                    {% else %}
+                        <div class="toc-placeholder">
+                            <p>📖 学习路线图</p>
+                            <ul>
+                                <li><a href="#chapter1">第一章：初探 Claude Code</a></li>
+                                <li><a href="#chapter2">第二章：进阶使用</a></li>
+                                <li><a href="#chapter3">第三章：最佳实践</a></li>
+                            </ul>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </aside>
+
+        <!-- 中间：主要内容 -->
+        <main class="main-content">
+            <div class="content-wrapper">
+                {{ content }}
+            </div>
+        </main>
+
+        <!-- 右侧：文章列表 -->
+        <aside class="right-sidebar">
+            <div class="sidebar-content">
+                <h3><i class="fas fa-newspaper"></i> 最新文章</h3>
+                <div class="recent-posts">
+                    {% for post in site.posts limit:8 %}
+                    <article class="post-item">
+                        <h4><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h4>
+                        <div class="post-meta">
+                            <time><i class="fas fa-calendar"></i> {{ post.date | date: "%m-%d" }}</time>
+                            {% if post.tags %}
+                            <div class="tags">
+                                {% for tag in post.tags limit:2 %}
+                                <span class="tag">{{ tag }}</span>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </article>
+                    {% endfor %}
+                </div>
+                
+                <h3><i class="fas fa-tags"></i> 标签云</h3>
+                <div class="tag-cloud">
+                    {% assign tags = site.tags | sort %}
+                    {% for tag in tags %}
+                    <a href="#" class="tag-item">{{ tag[0] }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>关于博客</h4>
+                <p>记录 Claude Code 学习历程，分享 AI 编程技巧</p>
+            </div>
+            <div class="footer-section">
+                <h4>快速链接</h4>
+                <ul>
+                    <li><a href="{{ '/' | relative_url }}">首页</a></li>
+                    <li><a href="{{ '/archives.html' | relative_url }}">文章归档</a></li>
+                    <li><a href="#">RSS 订阅</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>联系方式</h4>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-github"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fas fa-envelope"></i></a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 技术探索者. 记录每一步学习，分享每一个发现 🚀</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>hljs.highlightAll();</script>
+    <script src="{{ '/assets/js/main.js' | relative_url }}"></script>
+</body>
+</html>
